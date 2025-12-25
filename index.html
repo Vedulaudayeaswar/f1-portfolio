@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Uday's F1 Portfolio Track</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        overflow: hidden;
+        font-family: "Rajdhani", sans-serif;
+        background: #000;
+      }
+      #canvas {
+        display: block;
+      }
+
+      /* Sound Enable Button */
+      #audio-enable-button {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 30px 60px;
+        font-size: 32px;
+        font-family: "Orbitron", sans-serif;
+        background: linear-gradient(135deg, #e10600, #ff4500);
+        color: white;
+        border: 4px solid #ffd700;
+        border-radius: 15px;
+        cursor: pointer;
+        z-index: 6000;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        box-shadow: 0 0 60px rgba(225, 6, 0, 0.8),
+          0 0 100px rgba(255, 215, 0, 0.5);
+        animation: audioButtonPulse 2s ease-in-out infinite;
+        transition: all 0.3s;
+      }
+
+      #audio-enable-button:hover {
+        transform: translate(-50%, -50%) scale(1.1);
+        box-shadow: 0 0 80px rgba(225, 6, 0, 1),
+          0 0 120px rgba(255, 215, 0, 0.8);
+      }
+
+      @keyframes audioButtonPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 60px rgba(225, 6, 0, 0.8),
+            0 0 100px rgba(255, 215, 0, 0.5);
+        }
+        50% {
+          box-shadow: 0 0 80px rgba(225, 6, 0, 1),
+            0 0 120px rgba(255, 215, 0, 0.8);
+        }
+      }
+
+      #audio-enable-button.hidden {
+        display: none;
+      }
+
+      /* Welcome Screen */
+      #welcome-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          #0a0a0a 0%,
+          #1a1a2e 50%,
+          #0f0f1e 100%
+        );
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 4000;
+        animation: gradientShift 5s ease infinite;
+      }
+
+      @keyframes gradientShift {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      #welcome-screen.hidden {
+        display: none;
+      }
+
+      #welcome-screen h1 {
+        font-family: "Orbitron", sans-serif;
+        font-size: 64px;
+        font-weight: 900;
+        background: linear-gradient(90deg, #00d4ff, #e10600, #00d4ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        animation: neonPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes neonPulse {
+        0%,
+        100% {
+          text-shadow: 0 0 20px rgba(0, 212, 255, 0.8),
+            0 0 40px rgba(225, 6, 0, 0.6);
+        }
+        50% {
+          text-shadow: 0 0 40px rgba(0, 212, 255, 1),
+            0 0 80px rgba(225, 6, 0, 0.8);
+        }
+      }
+
+      #welcome-screen h2 {
+        font-size: 32px;
+        color: #00d4ff;
+        margin-bottom: 40px;
+        text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+      }
+
+      .input-container {
+        margin: 30px 0;
+      }
+
+      #racer-name-input {
+        padding: 15px 30px;
+        font-size: 24px;
+        font-family: "Orbitron", sans-serif;
+        background: rgba(0, 0, 0, 0.7);
+        border: 3px solid #00d4ff;
+        color: #00d4ff;
+        border-radius: 10px;
+        outline: none;
+        min-width: 350px;
+        text-align: center;
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        transition: all 0.3s;
+      }
+
+      #racer-name-input::placeholder {
+        color: rgba(0, 212, 255, 0.5);
+      }
+
+      #racer-name-input:focus {
+        border-color: #e10600;
+        box-shadow: 0 0 40px rgba(225, 6, 0, 0.5);
+      }
+
+      #enter-track-button {
+        padding: 20px 50px;
+        font-size: 28px;
+        font-family: "Orbitron", sans-serif;
+        background: linear-gradient(135deg, #e10600, #ff4500);
+        border: 3px solid #fff;
+        color: white;
+        cursor: pointer;
+        border-radius: 10px;
+        margin-top: 20px;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 700;
+        box-shadow: 0 0 40px rgba(225, 6, 0, 0.6);
+      }
+
+      #enter-track-button:hover {
+        transform: scale(1.1) translateY(-5px);
+        box-shadow: 0 0 60px rgba(225, 6, 0, 1);
+        background: linear-gradient(135deg, #ff4500, #e10600);
+      }
+
+      #enter-track-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* Intro Animation Screen */
+      #intro-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, #000428, #004e92);
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 3500;
+        color: white;
+      }
+
+      #intro-animation.active {
+        display: flex;
+      }
+
+      #intro-animation h2 {
+        font-family: "Orbitron", sans-serif;
+        font-size: 48px;
+        margin-bottom: 30px;
+        animation: fadeInOut 3s ease-in-out;
+      }
+
+      @keyframes fadeInOut {
+        0%,
+        100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .loading-bar {
+        width: 400px;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        overflow: hidden;
+        margin-top: 20px;
+      }
+
+      .loading-progress {
+        height: 100%;
+        background: linear-gradient(90deg, #00d4ff, #e10600);
+        width: 0%;
+        animation: loadTrack 3s ease-in-out forwards;
+      }
+
+      @keyframes loadTrack {
+        0% {
+          width: 0%;
+        }
+        100% {
+          width: 100%;
+        }
+      }
+
+      /* Loading Screen */
+      #loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #000000, #1a1a2e, #000428);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        color: white;
+      }
+
+      #loading-screen.hidden {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 1s ease-out;
+      }
+
+      .loader-container {
+        text-align: center;
+        max-width: 600px;
+      }
+
+      .progress-bar {
+        width: 500px;
+        height: 30px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid #00d4ff;
+        border-radius: 15px;
+        overflow: hidden;
+        margin: 20px 0;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #00d4ff, #e10600, #ffd700);
+        width: 0%;
+        transition: width 0.3s ease;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+      }
+
+      #loading-text {
+        font-size: 24px;
+        color: #ffd700;
+        margin-top: 20px;
+        font-family: "Orbitron", sans-serif;
+      }
+
+      .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border: 6px solid rgba(0, 212, 255, 0.3);
+        border-top-color: #00d4ff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 30px auto;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Control Buttons */
+      .control-btn {
+        padding: 12px 20px;
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid #00d4ff;
+        color: #00d4ff;
+        font-family: "Orbitron", sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.3s;
+        backdrop-filter: blur(10px);
+      }
+
+      .control-btn:hover {
+        background: #00d4ff;
+        color: #000;
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+      }
+
+      /* Mobile Controls */
+      #mobile-controls {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 250px;
+        z-index: 2000;
+        pointer-events: none;
+      }
+
+      .mobile-joystick {
+        position: absolute;
+        left: 50px;
+        bottom: 30px;
+        pointer-events: all;
+      }
+
+      .joystick-base {
+        width: 120px;
+        height: 120px;
+        background: rgba(0, 0, 0, 0.6);
+        border: 3px solid #00d4ff;
+        border-radius: 50%;
+        position: relative;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+      }
+
+      .joystick-stick {
+        width: 50px;
+        height: 50px;
+        background: #00d4ff;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.8);
+        transition: all 0.1s;
+      }
+
+      .mobile-buttons {
+        position: absolute;
+        right: 30px;
+        bottom: 30px;
+        display: flex;
+        gap: 15px;
+        pointer-events: all;
+      }
+
+      .mobile-btn {
+        width: 80px;
+        height: 80px;
+        background: rgba(225, 6, 0, 0.8);
+        border: 3px solid #ffd700;
+        color: white;
+        font-family: "Orbitron", sans-serif;
+        font-size: 12px;
+        font-weight: bold;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 20px rgba(225, 6, 0, 0.6);
+        transition: all 0.2s;
+      }
+
+      .mobile-btn:active {
+        transform: scale(0.9);
+        box-shadow: 0 0 30px rgba(225, 6, 0, 1);
+      }
+
+      /* Shop Tooltip */
+      #shop-tooltip {
+        position: fixed;
+        background: rgba(0, 0, 0, 0.95);
+        border: 2px solid #00d4ff;
+        padding: 15px 20px;
+        border-radius: 10px;
+        color: white;
+        font-family: "Orbitron", sans-serif;
+        pointer-events: none;
+        z-index: 3000;
+        opacity: 0;
+        transition: opacity 0.3s;
+        max-width: 300px;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+      }
+
+      #shop-tooltip.visible {
+        opacity: 1;
+      }
+
+      #shop-tooltip h3 {
+        color: #ffd700;
+        margin-bottom: 8px;
+        font-size: 16px;
+      }
+
+      #shop-tooltip p {
+        font-size: 12px;
+        line-height: 1.4;
+        color: #aaa;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        #mobile-controls {
+          display: block !important;
+        }
+        #instructions {
+          display: none;
+        }
+        .progress-bar {
+          width: 90%;
+        }
+      }
+
+      /* HUD */
+      #hud {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        color: white;
+        font-size: 20px;
+        z-index: 100;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 0, 0, 0.9),
+          rgba(26, 26, 46, 0.9)
+        );
+        padding: 20px 30px;
+        border-radius: 15px;
+        border: 2px solid #00d4ff;
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+        font-family: "Rajdhani", sans-serif;
+        font-weight: 500;
+      }
+
+      #hud div {
+        margin: 8px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      #hud strong {
+        color: #00d4ff;
+        margin-right: 15px;
+      }
+
+      #hud span {
+        color: #fff;
+        font-weight: 700;
+        font-size: 22px;
+      }
+
+      #racer-name-display {
+        font-family: "Orbitron", sans-serif;
+        color: #e10600;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-shadow: 0 0 10px rgba(225, 6, 0, 0.5);
+      }
+
+      #speed {
+        color: #e10600;
+      }
+
+      #progress {
+        color: #00ff00;
+      }
+
+      /* Shop Modal */
+      #shop-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+        padding: 50px;
+        border-radius: 20px;
+        color: white;
+        z-index: 2000;
+        max-width: 800px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        display: none;
+        box-shadow: 0 0 80px rgba(0, 212, 255, 0.6),
+          inset 0 0 60px rgba(225, 6, 0, 0.2);
+        border: 3px solid #00d4ff;
+        opacity: 0;
+        transition: all 0.3s;
+      }
+
+      #shop-modal.active {
+        display: block;
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+
+      #modal-thumbnail {
+        width: 100%;
+        max-width: 500px;
+        height: 250px;
+        background: linear-gradient(135deg, #1a1a2e, #000428);
+        border: 2px solid #00d4ff;
+        border-radius: 10px;
+        margin: 20px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 64px;
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+      }
+
+      #shop-modal h2 {
+        color: #e10600;
+        margin-bottom: 20px;
+        font-family: "Orbitron", sans-serif;
+        font-size: 36px;
+        text-shadow: 0 0 20px rgba(225, 6, 0, 0.8);
+      }
+
+      #shop-modal p {
+        line-height: 1.8;
+        font-size: 18px;
+        margin-bottom: 25px;
+        color: #ccc;
+      }
+
+      #shop-modal a {
+        color: #00d4ff;
+        text-decoration: none;
+        margin: 10px 15px;
+        display: inline-block;
+        font-size: 18px;
+        padding: 10px 20px;
+        border: 2px solid #00d4ff;
+        border-radius: 8px;
+        transition: all 0.3s;
+        font-weight: 600;
+      }
+
+      #shop-modal a:hover {
+        background: #00d4ff;
+        color: #000;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+      }
+
+      .close-shop-button {
+        background: linear-gradient(135deg, #e10600, #ff4500);
+        color: white;
+        border: none;
+        padding: 15px 35px;
+        cursor: pointer;
+        margin-top: 25px;
+        border-radius: 10px;
+        font-size: 20px;
+        font-weight: 700;
+        font-family: "Orbitron", sans-serif;
+        transition: all 0.3s;
+        box-shadow: 0 0 20px rgba(225, 6, 0, 0.5);
+      }
+
+      .close-shop-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 40px rgba(225, 6, 0, 0.8);
+      }
+
+      /* Instructions */
+      #instructions {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        z-index: 100;
+        border: 2px solid #00d4ff;
+        font-size: 16px;
+      }
+
+      #instructions strong {
+        color: #e10600;
+        font-family: "Orbitron", sans-serif;
+      }
+
+      /* Near Shop Indicator */
+      #near-shop-indicator {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 212, 255, 0.9);
+        color: #000;
+        padding: 20px 40px;
+        border-radius: 15px;
+        font-size: 24px;
+        font-weight: 700;
+        font-family: "Orbitron", sans-serif;
+        display: none;
+        z-index: 150;
+        box-shadow: 0 0 40px rgba(0, 212, 255, 1);
+        animation: pulse 1s ease-in-out infinite;
+      }
+
+      #near-shop-indicator.active {
+        display: block;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.1);
+        }
+      }
+
+      /* Victory Screen */
+      #victory-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(225, 6, 0, 0.95),
+          rgba(0, 0, 0, 0.95)
+        );
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        z-index: 3000;
+      }
+
+      #victory-screen.active {
+        display: flex;
+        animation: victoryAppear 1s ease-out;
+      }
+
+      @keyframes victoryAppear {
+        from {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      #victory-screen h1 {
+        font-size: 96px;
+        font-family: "Orbitron", sans-serif;
+        margin-bottom: 20px;
+        text-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+        animation: victoryPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes victoryPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
+      #victory-screen h2 {
+        font-size: 36px;
+        margin-bottom: 30px;
+      }
+
+      #victory-screen .social-links {
+        margin-top: 40px;
+      }
+
+      #victory-screen a {
+        color: white;
+        margin: 0 20px;
+        font-size: 24px;
+        text-decoration: none;
+        padding: 15px 30px;
+        border: 3px solid white;
+        border-radius: 10px;
+        transition: all 0.3s;
+        display: inline-block;
+        font-weight: 700;
+      }
+
+      #victory-screen a:hover {
+        background: white;
+        color: #e10600;
+        transform: translateY(-5px);
+      }
+
+      /* Mini Map */
+      #mini-map {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 200px;
+        height: 200px;
+        background: rgba(0, 0, 0, 0.9);
+        border: 3px solid #00d4ff;
+        border-radius: 50%;
+        z-index: 100;
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader-container">
+        <h1 style="font-size: 48px; margin-bottom: 30px; color: #00d4ff">
+          🏎️ LOADING F1 PORTFOLIO
+        </h1>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <p id="loading-text">Initializing track... 0%</p>
+        <div class="loading-spinner"></div>
+      </div>
+    </div>
+
+    <!-- Sound Enable Button (appears first) -->
+    <button id="audio-enable-button">🔊 ENABLE SOUND</button>
+
+    <!-- Welcome Screen -->
+    <div id="welcome-screen">
+      <h1>🏎️ UDAY'S F1 PORTFOLIO TRACK</h1>
+      <h2>The Ultimate Racing Portfolio Experience</h2>
+      <div class="input-container">
+        <input
+          type="text"
+          id="racer-name-input"
+          placeholder="ENTER YOUR RACER NAME"
+          maxlength="20"
+        />
+      </div>
+      <button id="enter-track-button" disabled>ENTER THE TRACK</button>
+      <p style="color: #666; margin-top: 20px; font-size: 16px">
+        * Name required to start the race
+      </p>
+    </div>
+
+    <!-- Intro Animation -->
+    <div id="intro-animation">
+      <h2 id="intro-text">Preparing the track...</h2>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+    </div>
+
+    <!-- HUD -->
+    <div id="hud">
+      <div id="racer-name-display"></div>
+      <div>
+        <strong>Shops Visited:</strong> <span id="collected">0</span>/<span
+          id="total"
+          >10</span
+        >
+      </div>
+      <div><strong>Speed:</strong> <span id="speed">0</span> km/h</div>
+      <div><strong>Lap Progress:</strong> <span id="progress">0</span>%</div>
+      <div><strong>Lap:</strong> <span id="lap">0</span>/1</div>
+    </div>
+
+    <!-- Camera & Mode Controls -->
+    <div
+      id="camera-controls"
+      style="
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      "
+    >
+      <button class="control-btn" id="camera-mode-btn" title="Switch Camera">
+        📷 Chase Cam
+      </button>
+      <button class="control-btn" id="day-night-btn" title="Toggle Day/Night">
+        ☀️ Day Mode
+      </button>
+    </div>
+
+    <!-- Mobile Touch Controls -->
+    <div id="mobile-controls" style="display: none">
+      <div class="mobile-joystick" id="joystick-left">
+        <div class="joystick-base">
+          <div class="joystick-stick" id="stick-left"></div>
+        </div>
+        <p style="color: #00d4ff; text-align: center; margin-top: 5px">STEER</p>
+      </div>
+      <div class="mobile-buttons">
+        <button class="mobile-btn" id="btn-accelerate">⬆️<br />GAS</button>
+        <button class="mobile-btn" id="btn-brake">⬇️<br />BRAKE</button>
+        <button class="mobile-btn" id="btn-enter" style="background: #ffd700">
+          SPACE<br />ENTER
+        </button>
+      </div>
+    </div>
+
+    <!-- Instructions -->
+    <div id="instructions">
+      <strong>Controls:</strong><br />
+      W/↑ - Accelerate | S/↓ - Brake<br />
+      A/← - Turn Left | D/→ - Turn Right<br />
+      SPACE - Enter Shop (when near)
+    </div>
+
+    <!-- Near Shop Indicator -->
+    <div id="near-shop-indicator">Press SPACE to Enter Shop! 🏪</div>
+
+    <!-- Shop Tooltip (hover preview) -->
+    <div id="shop-tooltip">
+      <h3 id="tooltip-title"></h3>
+      <p id="tooltip-description"></p>
+    </div>
+
+    <!-- Shop Modal -->
+    <div id="shop-modal">
+      <div id="modal-thumbnail"></div>
+      <h2 id="modal-title"></h2>
+      <p id="modal-description"></p>
+      <div id="modal-links"></div>
+      <button class="close-shop-button" onclick="closeShop()">
+        CONTINUE RACING →
+      </button>
+    </div>
+
+    <!-- Victory Screen -->
+    <div id="victory-screen">
+      <h1>🏆 RACE COMPLETE!</h1>
+      <h2 id="victory-racer-name"></h2>
+      <p style="font-size: 24px">You've explored all shops on Uday's track!</p>
+      <p style="font-size: 18px; margin-top: 20px">
+        Total Shops Visited: <strong>11/11</strong>
+      </p>
+
+      <div
+        style="
+          margin: 30px 0;
+          padding: 20px;
+          background: rgba(0, 212, 255, 0.1);
+          border-radius: 10px;
+        "
+      >
+        <h3 style="color: #00d4ff; margin-bottom: 15px">📞 Contact Me</h3>
+        <p style="font-size: 20px; color: #ffd700; margin: 10px 0">
+          <strong>Phone:</strong> +91 9583363878
+        </p>
+        <p style="font-size: 18px; color: #00d4ff; margin: 10px 0">
+          <strong>Email:</strong> vedulaudayeaswar2004@gmail.com
+        </p>
+      </div>
+
+      <div class="social-links">
+        <a href="https://github.com/Vedulaudayeaswar" target="_blank">
+          🔗 GitHub Profile
+        </a>
+        <a
+          href="https://www.linkedin.com/in/uday-easwar-22290a27a/"
+          target="_blank"
+        >
+          💼 LinkedIn
+        </a>
+      </div>
+
+      <button
+        id="race-again-button"
+        style="
+          margin-top: 30px;
+          padding: 20px 50px;
+          font-size: 24px;
+          font-family: 'Orbitron', sans-serif;
+          background: linear-gradient(135deg, #00d4ff, #0088ff);
+          border: 3px solid #fff;
+          color: white;
+          cursor: pointer;
+          border-radius: 10px;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          font-weight: 700;
+          box-shadow: 0 0 40px rgba(0, 212, 255, 0.6);
+          transition: all 0.3s;
+        "
+        onmouseover="this.style.transform='scale(1.1)'"
+        onmouseout="this.style.transform='scale(1)'"
+      >
+        🏁 RACE AGAIN
+      </button>
+    </div>
+
+    <!-- Mini Map -->
+    <canvas id="mini-map"></canvas>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "name": "f1-portfolio",
+  "version": "1.0.0",
+  "description": "Formula One Racing Portfolio for Vedula Uday Easwar",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "threejs",
+    "portfolio",
+    "f1",
+    "racing",
+    "3d"
+  ],
+  "author": "Vedula Uday Easwar <vedulaudayeaswar2004@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
