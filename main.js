@@ -154,7 +154,7 @@ const camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
   0.1,
-  1000
+  1000,
 );
 // Set initial camera position (bird's eye view of track)
 camera.position.set(0, 80, 100);
@@ -190,7 +190,7 @@ function createStarField() {
 
   starGeometry.setAttribute(
     "position",
-    new THREE.Float32BufferAttribute(starVertices, 3)
+    new THREE.Float32BufferAttribute(starVertices, 3),
   );
 
   const starMaterial = new THREE.PointsMaterial({
@@ -232,12 +232,12 @@ for (let i = 0; i < 8; i++) {
   light.position.set(
     Math.cos(angle) * (trackRadius + 25),
     18,
-    Math.sin(angle) * (trackRadius + 25)
+    Math.sin(angle) * (trackRadius + 25),
   );
   light.target.position.set(
     Math.cos(angle) * trackRadius,
     0,
-    Math.sin(angle) * trackRadius
+    Math.sin(angle) * trackRadius,
   );
   light.castShadow = false; // Disable shadows to improve performance
   scene.add(light);
@@ -259,7 +259,7 @@ function createCircularTrack() {
     0,
     2 * Math.PI,
     false,
-    0
+    0,
   );
   const outerPoints = outerCurve.getPoints(100);
   trackShape.moveTo(outerPoints[0].x, outerPoints[0].y);
@@ -274,7 +274,7 @@ function createCircularTrack() {
     0,
     2 * Math.PI,
     false,
-    0
+    0,
   );
   const innerPoints = innerCurve.getPoints(100);
   holePath.moveTo(innerPoints[0].x, innerPoints[0].y);
@@ -312,18 +312,18 @@ function createCircularTrack() {
     0,
     2 * Math.PI,
     false,
-    0
+    0,
   );
   const innerLanePoints = innerLaneCurve.getPoints(100);
   const innerLaneGeometry = new THREE.BufferGeometry().setFromPoints(
-    innerLanePoints
+    innerLanePoints,
   );
   const innerLaneLine = new THREE.Line(
     innerLaneGeometry,
     new THREE.LineBasicMaterial({
       color: 0xffdd00,
       linewidth: 2,
-    })
+    }),
   );
   innerLaneLine.rotation.x = -Math.PI / 2;
   innerLaneLine.position.y = 0.06;
@@ -339,18 +339,18 @@ function createCircularTrack() {
     0,
     2 * Math.PI,
     false,
-    0
+    0,
   );
   const outerLanePoints = outerLaneCurve.getPoints(100);
   const outerLaneGeometry = new THREE.BufferGeometry().setFromPoints(
-    outerLanePoints
+    outerLanePoints,
   );
   const outerLaneLine = new THREE.Line(
     outerLaneGeometry,
     new THREE.LineBasicMaterial({
       color: 0xffdd00,
       linewidth: 2,
-    })
+    }),
   );
   outerLaneLine.rotation.x = -Math.PI / 2;
   outerLaneLine.position.y = 0.06;
@@ -359,7 +359,7 @@ function createCircularTrack() {
   // Checkered start/finish line (realistic pattern)
   const finishGeometry = new THREE.PlaneGeometry(
     trackOuterRadius - trackInnerRadius,
-    10
+    10,
   );
 
   // Create checkered pattern
@@ -389,7 +389,7 @@ function createCircularTrack() {
   finishLine.position.set(
     0,
     0.06,
-    trackInnerRadius + (trackOuterRadius - trackInnerRadius) / 2
+    trackInnerRadius + (trackOuterRadius - trackInnerRadius) / 2,
   );
   scene.add(finishLine);
 
@@ -430,7 +430,7 @@ function createBarriers(radius, color) {
       board.position.set(
         Math.cos(angle) * (radius + (radius > 60 ? 0.5 : -0.5)),
         3,
-        Math.sin(angle) * (radius + (radius > 60 ? 0.5 : -0.5))
+        Math.sin(angle) * (radius + (radius > 60 ? 0.5 : -0.5)),
       );
       board.lookAt(0, 3, 0);
       scene.add(board);
@@ -524,7 +524,7 @@ texts.forEach((textData, index) => {
     textData.text,
     textData.yOffset,
     textData.size,
-    textData.color
+    textData.color,
   );
 
   textMesh.position.x = Math.cos(startAngle) * radius;
@@ -597,7 +597,7 @@ function createAudience() {
       body.position.set(
         Math.cos(angle) * radius,
         row * 2 + 1,
-        Math.sin(angle) * radius
+        Math.sin(angle) * radius,
       );
       body.lookAt(0, row * 2 + 1, 0);
       body.castShadow = false; // Disable shadows for performance
@@ -929,7 +929,7 @@ function createModernShop(shopData) {
   });
   const mainBuilding = new THREE.Mesh(
     mainBuildingGeometry,
-    mainBuildingMaterial
+    mainBuildingMaterial,
   );
   mainBuilding.position.y = 5.9;
   mainBuilding.castShadow = true;
@@ -1083,7 +1083,7 @@ function createModernShop(shopData) {
   labelContext.fillText(
     shopData.icon + " " + shopData.name.split(" - ")[0],
     labelCanvas.width / 2,
-    labelCanvas.height / 2
+    labelCanvas.height / 2,
   );
 
   const labelTexture = new THREE.CanvasTexture(labelCanvas);
@@ -1119,7 +1119,7 @@ function createModernShop(shopData) {
     25,
     Math.PI / 6,
     0.3,
-    2
+    2,
   );
   spotlight.position.set(0, 18, 0);
   spotlight.target.position.set(0, 0, 0);
@@ -1150,11 +1150,11 @@ function createModernShop(shopData) {
 
   particleGeometry.setAttribute(
     "position",
-    new THREE.BufferAttribute(particlePositions, 3)
+    new THREE.BufferAttribute(particlePositions, 3),
   );
   particleGeometry.setAttribute(
     "color",
-    new THREE.BufferAttribute(particleColors, 3)
+    new THREE.BufferAttribute(particleColors, 3),
   );
 
   const particleMaterial = new THREE.PointsMaterial({
@@ -1226,7 +1226,7 @@ function createModernShop(shopData) {
   group.position.set(
     Math.cos(angleRad) * radius,
     0,
-    Math.sin(angleRad) * radius
+    Math.sin(angleRad) * radius,
   );
   group.lookAt(0, 0, 0);
 
@@ -1442,12 +1442,12 @@ function createConfetti(position) {
     confetti.velocity = new THREE.Vector3(
       (Math.random() - 0.5) * 2,
       Math.random() * 3 + 2,
-      (Math.random() - 0.5) * 2
+      (Math.random() - 0.5) * 2,
     );
     confetti.angularVelocity = new THREE.Vector3(
       Math.random() * 0.2,
       Math.random() * 0.2,
-      Math.random() * 0.2
+      Math.random() * 0.2,
     );
 
     confettiGroup.add(confetti);
@@ -1494,7 +1494,7 @@ function createDustParticle(position) {
   dust.velocity = new THREE.Vector3(
     (Math.random() - 0.5) * 0.5,
     Math.random() * 0.3,
-    (Math.random() - 0.5) * 0.5
+    (Math.random() - 0.5) * 0.5,
   );
   dust.life = 1.0;
 
@@ -1787,7 +1787,7 @@ const btnEnter = document.getElementById("btn-enter");
 // Detect mobile
 if (
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
+    navigator.userAgent,
   )
 ) {
   mobileControls.style.display = "block";
@@ -1832,11 +1832,24 @@ joystickBase.addEventListener("touchend", () => {
 });
 
 // Mobile buttons
-btnAccelerate.addEventListener("touchstart", () => (keys["w"] = true));
-btnAccelerate.addEventListener("touchend", () => (keys["w"] = false));
-btnBrake.addEventListener("touchstart", () => (keys["s"] = true));
-btnBrake.addEventListener("touchend", () => (keys["s"] = false));
-btnEnter.addEventListener("touchstart", () => {
+btnAccelerate.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  keys["w"] = true;
+});
+btnAccelerate.addEventListener("touchend", (e) => {
+  e.preventDefault();
+  keys["w"] = false;
+});
+btnBrake.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  keys["s"] = true;
+});
+btnBrake.addEventListener("touchend", (e) => {
+  e.preventDefault();
+  keys["s"] = false;
+});
+btnEnter.addEventListener("touchstart", (e) => {
+  e.preventDefault();
   if (nearShop && !nearShop.userData.collected) {
     enterShop(nearShop);
   }
@@ -1979,7 +1992,7 @@ function updateCar() {
 
         // Light intensity flicker
         exhaustLight.intensity = 1 + speedRatio * 3 + flicker * 0.5;
-      }
+      },
     );
   }
 
@@ -2009,7 +2022,7 @@ function updateCar() {
   }
 
   document.getElementById("speed").textContent = Math.abs(
-    carSpeed * 100
+    carSpeed * 100,
   ).toFixed(0);
   document.getElementById("collected").textContent = collectedCount;
   document.getElementById("total").textContent = totalShops;

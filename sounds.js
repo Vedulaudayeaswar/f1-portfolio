@@ -59,7 +59,7 @@ export class SoundManager {
 
     this.isInitialized = true;
     console.log(
-      "✅ Placeholder sounds loaded! Replace with real audio files for better experience."
+      "✅ Placeholder sounds loaded! Replace with real audio files for better experience.",
     );
 
     return true;
@@ -72,24 +72,23 @@ export class SoundManager {
   async loadAllSounds() {
     console.log("🎵 Loading sound files...");
 
+    // Use the custom audio.mpeg for engine and background music
     const soundFiles = {
-      engine: "./sounds/engine.ogg",
-      crowdAmbient: "./sounds/crowd-ambient.ogg",
-      victoryRoar: "./sounds/victory-roar.ogg",
-      shopCollect: "./sounds/shop-collect.ogg",
-      shopkeeperWelcome: "./sounds/shopkeeper-welcome.ogg",
-      shopkeeperDelivery: "./sounds/shopkeeper-delivery.ogg",
-      shopkeeperFarewell: "./sounds/shopkeeper-farewell.ogg",
-      victoryFanfare: "./sounds/victory-fanfare.ogg",
-      confettiPop: "./sounds/confetti-pop.ogg",
-      windWhoosh: "./sounds/wind-whoosh.ogg",
-      tireScreech: "./sounds/tire-screech.ogg",
+      engine: "./sounds/audio.mpeg",
+      crowdAmbient: "./sounds/audio.mpeg",
     };
 
-    const loopingSounds = ["engine", "crowdAmbient", "windWhoosh"];
+    const loopingSounds = ["engine", "crowdAmbient"];
 
+    // Load main audio files
     const loadPromises = Object.entries(soundFiles).map(([name, url]) =>
-      this.loadSound(name, url, loopingSounds.includes(name), 0.5, false)
+      this.loadSound(
+        name,
+        url,
+        loopingSounds.includes(name),
+        name === "engine" ? 0.4 : 0.25,
+        false,
+      ),
     );
 
     try {
@@ -98,12 +97,26 @@ export class SoundManager {
 
       if (failedSounds.length > 0) {
         console.warn(
-          `⚠️ ${failedSounds.length} sound files missing, using placeholders`
+          `⚠️ ${failedSounds.length} sound files missing, using placeholders`,
         );
         await this.initializePlaceholderSounds();
       } else {
+        // Main sounds loaded, create placeholder for effects
+        console.log("✅ Main audio loaded successfully!");
+
+        // Create simple placeholder sounds for effects
+        this.sounds.shopCollect = this.createBeepSound(880, 0.2);
+        this.sounds.confettiPop = this.createBeepSound(1320, 0.1);
+        this.sounds.shopkeeperWelcome = this.createBeepSound(440, 0.3);
+        this.sounds.shopkeeperDelivery = this.createBeepSound(550, 0.3);
+        this.sounds.shopkeeperFarewell = this.createBeepSound(660, 0.3);
+        this.sounds.victoryRoar = this.createBeepSound(220, 0.5);
+        this.sounds.victoryFanfare = this.createBeepSound(1760, 0.8);
+        this.sounds.tireScreech = this.createBeepSound(800, 0.4);
+        this.sounds.windWhoosh = this.createLoopingNoise(0.15);
+
         this.isInitialized = true;
-        console.log("✅ All sound files loaded successfully!");
+        console.log("✅ All sounds ready!");
       }
     } catch (error) {
       console.warn("⚠️ Could not load sound files, using placeholders");
@@ -133,7 +146,7 @@ export class SoundManager {
         (error) => {
           console.warn(`Could not load: ${url}`);
           reject(error);
-        }
+        },
       );
     });
   }
