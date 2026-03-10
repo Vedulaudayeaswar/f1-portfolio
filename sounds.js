@@ -74,8 +74,8 @@ export class SoundManager {
 
     // Use the custom audio.mpeg for engine and background music
     const soundFiles = {
-      engine: "./sounds/audio.mpeg",
-      crowdAmbient: "./sounds/audio.mpeg",
+      engine: "/sounds/audio.mpeg",
+      crowdAmbient: "/sounds/audio.mpeg",
     };
 
     const loopingSounds = ["engine", "crowdAmbient"];
